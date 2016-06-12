@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Citizens.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,17 +48,25 @@ namespace Citizens
 
         public Citizen(string firstName, string lastName, DateTime birthDate, Gender gender)
         {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.birthDate = birthDate;
+            this.firstName = CitizenHelper.toTitleCase(firstName);
+            this.lastName = CitizenHelper.toTitleCase(lastName);
 
-            if (gender == Gender.Male || gender == Gender.Female)
+            if (CitizenHelper.isGenderValid(gender))
             {
                 this.gender = gender;
             }
             else
             {
                 throw new ArgumentOutOfRangeException();
+            }
+
+            if (CitizenHelper.IsPastDate(birthDate))
+            {
+                this.birthDate = CitizenHelper.GetDateOnly(birthDate);
+            }
+            else
+            {
+                throw new ArgumentException();
             }
         }
     }
