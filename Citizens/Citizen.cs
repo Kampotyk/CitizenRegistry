@@ -50,7 +50,15 @@ namespace Citizens
             this.firstName = firstName;
             this.lastName = lastName;
             this.birthDate = birthDate;
-            this.gender = gender;
+
+            if (gender == Gender.Male || gender == Gender.Female)
+            {
+                this.gender = gender;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException();
+            }
         }
     }
 
