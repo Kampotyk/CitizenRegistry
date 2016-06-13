@@ -44,6 +44,7 @@
     <Compile Include="CitizenRegistry.cs" />
     <Compile Include="Gender.cs" />
     <Compile Include="Helpers\CitizenHelper.cs" />
+    <Compile Include="Helpers\CitizenRegistryHelper.cs" />
     <Compile Include="ICitizen.cs" />
     <Compile Include="ICitizenRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

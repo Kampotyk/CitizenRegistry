@@ -1,12 +1,9 @@
-﻿using Citizens.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using Citizens.Helpers;
 
 namespace Citizens
 {
-    public class Citizen : ICitizen
+    public class Citizen : ICitizen, ICloneable
     {
         private string firstName;
         private string lastName;
@@ -68,6 +65,11 @@ namespace Citizens
             {
                 throw new ArgumentException();
             }
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 
