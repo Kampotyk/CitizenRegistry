@@ -141,12 +141,12 @@
             Assert.IsNull(result);
         }
 
-        //[TestMethod]
-        //public void Stats_WithEmptyRegistry_ReturnsMessageZeroMenAndZeroWomen()
-        //{
-        //    var msg = registry.Stats();
-        //    Assert.AreEqual("0 men and 0 women", msg);
-        //}
+        [TestMethod]
+        public void Stats_WithEmptyRegistry_ReturnsMessageZeroMenAndZeroWomen()
+        {
+            var msg = registry.Stats();
+            Assert.AreEqual("0 men and 0 women", msg);
+        }
 
         //[TestMethod]
         //public void Stats_WithOneManInRegistry_ReturnsMessageOneManAndZeroWomenWithLastRegistrationTimeInfo()

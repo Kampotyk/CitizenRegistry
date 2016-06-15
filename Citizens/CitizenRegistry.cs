@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Citizens.Helpers;
+using Humanizer;
 
 namespace Citizens
 {
@@ -24,8 +25,8 @@ namespace Citizens
 
                     do
                     {
-                       birthNumber = CitizenRegistryHelper.GetBirthNumber(citizen.Gender);
-                       id = CitizenRegistryHelper.GenerateVatId(citizen.BirthDate, birthNumber, citizen.Gender);
+                        birthNumber = CitizenRegistryHelper.GetBirthNumber(citizen.Gender);
+                        id = CitizenRegistryHelper.GenerateVatId(citizen.BirthDate, birthNumber, citizen.Gender);
                     } while (Array.Find(citizens, person => person.VatId == id) != null);
                     citizen.VatId = id;
                 }
@@ -41,7 +42,7 @@ namespace Citizens
         public ICitizen this[string id]
         {
             get
-            {   
+            {
                 if (id == null)
                 {
                     throw new ArgumentNullException();
@@ -52,7 +53,16 @@ namespace Citizens
 
         public string Stats()
         {
-            throw new NotImplementedException();
+            int genderCount = Enum.GetNames(typeof(Gender)).Length;
+            int[] stats = new int[genderCount];
+
+            foreach (var citizen in citizens)
+            {
+                stats[(int)citizen.Gender]++;
+            }
+            string maleCount = "man".ToQuantity(stats[(int)Gender.Male]);
+            string femaleCount = "woman".ToQuantity(stats[(int)Gender.Female]);
+            return String.Format("{0} and {1}", maleCount, femaleCount);
         }
     }
 }
