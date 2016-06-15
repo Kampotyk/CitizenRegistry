@@ -8,10 +8,12 @@ namespace Citizens
     public class CitizenRegistry : ICitizenRegistry
     {
         Citizen[] citizens;
+        DateTime lastRegistrationTime;
 
         public CitizenRegistry()
         {
             citizens = new Citizen[0];
+            lastRegistrationTime = DateTime.MinValue;
         }
 
         public void Register(ICitizen citizen)
@@ -32,6 +34,7 @@ namespace Citizens
                 }
                 Array.Resize(ref citizens, citizens.Length + 1);
                 citizens[citizens.Length - 1] = (citizen as Citizen).Clone() as Citizen;
+                lastRegistrationTime = SystemDateTime.Now();
             }
             else
             {
@@ -62,7 +65,17 @@ namespace Citizens
             }
             string maleCount = "man".ToQuantity(stats[(int)Gender.Male]);
             string femaleCount = "woman".ToQuantity(stats[(int)Gender.Female]);
-            return String.Format("{0} and {1}", maleCount, femaleCount);
+            if (stats[(int)Gender.Male] == 0 && stats[(int)Gender.Female] == 0)
+            {
+                return String.Format("{0} and {1}", maleCount, femaleCount);
+            }
+            else
+            {
+                var hoursPassed = (lastRegistrationTime - SystemDateTime.Now()).TotalHours;
+                string lastRegHuman = DateTime.UtcNow.AddHours(hoursPassed).Humanize();
+                return String.Format("{0} and {1}. Last registration was {2}", maleCount, femaleCount, lastRegHuman);
+            }
+
         }
     }
 }
