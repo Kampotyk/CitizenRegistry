@@ -3,9 +3,11 @@
 namespace Citizens.Helpers
 {
     public class CitizenRegistryHelper
-    {
-        public const int MaxBirthsPerDay = 5000;
-        public static readonly DateTime StartDate = new DateTime(1899, 12, 31);
+    { 
+        private const int MaxBirthsPerDay = 5000;
+        private static readonly DateTime StartDate = new DateTime(1899, 12, 31);
+        private static readonly Random random = new Random();
+        public const int RegistryCap = 10;
 
         public static string GenerateVatId(DateTime birthDate, int birthNumber, Gender gender)
         {
@@ -31,10 +33,21 @@ namespace Citizens.Helpers
 
         public static int GetBirthNumber(Gender gender)
         {
-            Random rnd = new Random();
-            int evenRandomNum = 2 * rnd.Next(1, MaxBirthsPerDay / 2 + 1);
+            int evenRandomNum = 2 * random.Next(1, MaxBirthsPerDay / 2 + 1);
             int oddRandomNum = evenRandomNum != MaxBirthsPerDay ? evenRandomNum + 1 : evenRandomNum - 1;
             return gender == Gender.Male ? oddRandomNum : evenRandomNum;
+        }
+
+        public static Citizen FindCitizenById(Citizen[] citizens, int count, string id)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (citizens[i].VatId.Equals(id))
+                {
+                    return citizens[i];
+                }
+            }
+            return null;
         }
     }
 }

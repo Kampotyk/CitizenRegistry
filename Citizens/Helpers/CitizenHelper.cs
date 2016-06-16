@@ -4,16 +4,16 @@ namespace Citizens.Helpers
 {
     public class CitizenHelper
     {
-        public static bool isGenderValid(Gender gender)
+        public static bool IsGenderValid(Gender gender)
         {
-            return gender == Gender.Male || gender == Gender.Female;
+            return Enum.IsDefined(typeof(Gender), gender);
         }
 
-        public static string toTitleCase(string input)
+        public static string ToTitleCase(string input)
         {
             if (String.IsNullOrEmpty(input))
             {
-                throw new ArgumentException();
+                throw new ArgumentException("input");
             }
             else
             {

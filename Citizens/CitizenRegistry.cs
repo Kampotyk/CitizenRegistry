@@ -7,18 +7,20 @@ namespace Citizens
 {
     public class CitizenRegistry : ICitizenRegistry
     {
-        Citizen[] citizens;
-        DateTime lastRegistrationTime;
+        private Citizen[] citizens;
+        private DateTime lastRegistrationTime;
+        private int citizenCount;
 
         public CitizenRegistry()
         {
-            citizens = new Citizen[0];
+            citizens = new Citizen[CitizenRegistryHelper.RegistryCap];
             lastRegistrationTime = DateTime.MinValue;
+            citizenCount = 0;
         }
 
         public void Register(ICitizen citizen)
         {
-            if (citizen.VatId == null || Array.Find(citizens, person => person.VatId == citizen.VatId) == null)
+            if (citizen.VatId == null || CitizenRegistryHelper.FindCitizenById(citizens, citizenCount, citizen.VatId) == null)
             {
                 if (String.IsNullOrWhiteSpace(citizen.VatId))
                 {
@@ -29,11 +31,15 @@ namespace Citizens
                     {
                         birthNumber = CitizenRegistryHelper.GetBirthNumber(citizen.Gender);
                         id = CitizenRegistryHelper.GenerateVatId(citizen.BirthDate, birthNumber, citizen.Gender);
-                    } while (Array.Find(citizens, person => person.VatId == id) != null);
+                    } while (CitizenRegistryHelper.FindCitizenById(citizens, citizenCount, id) != null);
                     citizen.VatId = id;
                 }
-                Array.Resize(ref citizens, citizens.Length + 1);
-                citizens[citizens.Length - 1] = (citizen as Citizen).Clone() as Citizen;
+                if (citizenCount == citizens.Length)
+                {
+                    Array.Resize(ref citizens, citizens.Length * 2);
+                }
+                citizens[citizenCount] = citizen.Clone() as Citizen;
+                citizenCount++;
                 lastRegistrationTime = SystemDateTime.Now();
             }
             else
@@ -48,32 +54,43 @@ namespace Citizens
             {
                 if (id == null)
                 {
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException("id");
                 }
-                return Array.Find(citizens, citizen => citizen.VatId == id);
+                else
+                {
+                    return CitizenRegistryHelper.FindCitizenById(citizens, citizenCount, id);
+                }
             }
         }
 
         public string Stats()
         {
-            int genderCount = Enum.GetNames(typeof(Gender)).Length;
-            int[] stats = new int[genderCount];
+            int maleCount = 0;
+            int femaleCount = 0;
 
-            foreach (var citizen in citizens)
+            for (int i = 0; i < citizenCount; i++)
             {
-                stats[(int)citizen.Gender]++;
+                if (citizens[i].Gender == Gender.Male)
+                {
+                    maleCount++;
+                }
+                else
+                {
+                    femaleCount++;
+                }
             }
-            string maleCount = "man".ToQuantity(stats[(int)Gender.Male]);
-            string femaleCount = "woman".ToQuantity(stats[(int)Gender.Female]);
-            if (stats[(int)Gender.Male] == 0 && stats[(int)Gender.Female] == 0)
+
+            var maleCountHuman = "man".ToQuantity(maleCount);
+            var femaleCountHuman = "woman".ToQuantity(femaleCount);
+
+            if (maleCount == 0 && femaleCount == 0)
             {
-                return String.Format("{0} and {1}", maleCount, femaleCount);
+                return String.Format("{0} and {1}", maleCountHuman, femaleCountHuman);
             }
             else
             {
-                var hoursPassed = (lastRegistrationTime - SystemDateTime.Now()).TotalHours;
-                string lastRegHuman = DateTime.UtcNow.AddHours(hoursPassed).Humanize();
-                return String.Format("{0} and {1}. Last registration was {2}", maleCount, femaleCount, lastRegHuman);
+                var lastRegHuman = lastRegistrationTime.Humanize(true, SystemDateTime.Now());
+                return String.Format("{0} and {1}. Last registration was {2}", maleCountHuman, femaleCountHuman, lastRegHuman);
             }
 
         }

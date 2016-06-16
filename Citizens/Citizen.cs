@@ -3,7 +3,7 @@ using Citizens.Helpers;
 
 namespace Citizens
 {
-    public class Citizen : ICitizen, ICloneable
+    public class Citizen : ICitizen
     {
         private string firstName;
         private string lastName;
@@ -45,16 +45,16 @@ namespace Citizens
 
         public Citizen(string firstName, string lastName, DateTime birthDate, Gender gender)
         {
-            this.firstName = CitizenHelper.toTitleCase(firstName);
-            this.lastName = CitizenHelper.toTitleCase(lastName);
+            this.firstName = CitizenHelper.ToTitleCase(firstName);
+            this.lastName = CitizenHelper.ToTitleCase(lastName);
 
-            if (CitizenHelper.isGenderValid(gender))
+            if (CitizenHelper.IsGenderValid(gender))
             {
                 this.gender = gender;
             }
             else
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(gender.ToString());
             }
 
             if (CitizenHelper.IsPastDate(birthDate))
@@ -63,7 +63,7 @@ namespace Citizens
             }
             else
             {
-                throw new ArgumentException();
+                throw new ArgumentException(birthDate.ToString());
             }
         }
 
