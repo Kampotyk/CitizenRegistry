@@ -54,7 +54,7 @@ namespace Citizens
             }
             else
             {
-                throw new ArgumentOutOfRangeException(gender.ToString());
+                throw new ArgumentOutOfRangeException("gender");
             }
 
             if (CitizenHelper.IsPastDate(birthDate))
@@ -63,7 +63,7 @@ namespace Citizens
             }
             else
             {
-                throw new ArgumentException(birthDate.ToString());
+                throw new ArgumentException("birthDate");
             }
         }
 
